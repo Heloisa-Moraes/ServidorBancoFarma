@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 8080; // Mudei para 8080 para combinar com o Railway
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -41,7 +41,7 @@ const Farmacia = mongoose.model('Farmacia', farmaciaSchema);
 
 // Rotas
 app.get('/api/test', (req, res) => {
-    res.send('API está funcionando!');
+    res.send('   está funcionando!');
 });
 
 app.get('/api/test/farmacias', async (req, res) => {
