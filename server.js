@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080; // Mudei para 8080 para combinar com o Railway
 
 // Middleware
 app.use(cors());
@@ -10,7 +10,7 @@ app.use(express.json());
 
 // Conexão com o MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI)
     .then(() => {
         console.log('Conectado ao MongoDB!');
         // Iniciar o servidor apenas após a conexão bem-sucedida
@@ -41,7 +41,7 @@ const Farmacia = mongoose.model('Farmacia', farmaciaSchema);
 
 // Rotas
 app.get('/api/test', (req, res) => {
-    res.send('   está funcionando!');
+    res.send('API está funcionando!');
 });
 
 app.get('/api/test/farmacias', async (req, res) => {
