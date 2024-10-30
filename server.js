@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080; // Mudei para 8080 para combinar com o Railway
 
 // Middleware
 app.use(cors());
@@ -13,7 +13,6 @@ const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Conectado ao MongoDB!');
-
         // Iniciar o servidor apenas após a conexão bem-sucedida
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
@@ -24,11 +23,18 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
         process.exit(1); // Finaliza o processo se a conexão falhar
     });
 
-// Modelo Mongoose para Farmacia
+// Definindo o modelo de farmácia
 const farmaciaSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     endereco: { type: String, required: true },
-    // outros campos que você deseja adicionar...
+    telefone: { type: String },
+    location: {
+        type: { type: String, enum: ['Point'], required: true },
+        coordinates: { type: [Number], required: true } // Array de números
+    },
+    abre: { type: String },
+    fecha: { type: String },
+    plantao: { type: [Date] } // Array de datas
 });
 
 const Farmacia = mongoose.model('Farmacia', farmaciaSchema);
@@ -38,12 +44,13 @@ app.get('/api/test', (req, res) => {
     res.send('API está funcionando!');
 });
 
-// Endpoint para buscar farmácias
 app.get('/api/test/farmacias', async (req, res) => {
     try {
-        const farmacias = await Farmacia.find(); // Busca todas as farmácias no banco
-        res.json(farmacias); // Retorna as farmácias como JSON
+        const farmacias = await Farmacia.find();
+        console.log('Farmácias encontradas:', farmacias); // Log para depuração
+        res.json(farmacias);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Erro ao buscar farmácias:', error); // Log do erro
+        res.status(500).send('Erro ao buscar farmácias');
     }
 });
